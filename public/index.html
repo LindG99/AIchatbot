@@ -20,11 +20,11 @@
             const userMessage = input.value;
             if (!userMessage.trim()) return;
 
-            // Lägg till användarens meddelande i chatten
+           
             chatbox.innerHTML += `<div class="chat-message user">${userMessage}</div>`;
             input.value = "";
 
-            // Gör en API-anrop till servern för att få svaret från boten
+           
             try {
                 const response = await fetch("http://localhost:3000/chat", {
                     method: "POST",
@@ -35,7 +35,7 @@
                 const data = await response.json();
                 chatbox.innerHTML += `<div class="chat-message bot">${data.response}</div>`;
 
-                // Rulla ner till sista meddelandet
+                
                 chatbox.scrollTop = chatbox.scrollHeight;
             } catch (error) {
                 chatbox.innerHTML += `<div class="chat-message bot">Fel vid kommunikation</div>`;
