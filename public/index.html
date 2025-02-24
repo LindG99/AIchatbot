@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold text-center text-blue-600 mb-4">Chatbot</h1>
+        <div class="chatbox" id="chatbox"></div>
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Skriv ett meddelande..." class="rounded-lg" />
+            <button onclick="sendMessage()">Skicka</button>
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const input = document.getElementById("userInput");
+            const chatbox = document.getElementById("chatbox");
+
+            const userMessage = input.value;
+            if (!userMessage.trim()) return;
+
+            // Lägg till användarens meddelande i chatten
+            chatbox.innerHTML += `<div class="chat-message user">${userMessage}</div>`;
+            input.value = "";
+
+            // Gör en API-anrop till servern för att få svaret från boten
+            try {
+                const response = await fetch("http://localhost:3000/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: userMessage })
+                });
+
+                const data = await response.json();
+                chatbox.innerHTML += `<div class="chat-message bot">${data.response}</div>`;
+
+                // Rulla ner till sista meddelandet
+                chatbox.scrollTop = chatbox.scrollHeight;
+            } catch (error) {
+                chatbox.innerHTML += `<div class="chat-message bot">Fel vid kommunikation</div>`;
+            }
+        }
+    </script>
+</body>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0-beta.4/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Du kan lägga till egen CSS här om du vill */
+        .chatbox {
+            max-width: 500px;
+            margin: 20px auto;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .chat-message {
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 12px;
+            max-width: 80%;
+            word-wrap: break-word;
+            background-color: #ffffff;
+        }
+
+        .chat-message.user {
+            background-color: #0084ff;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .chat-message.bot {
+            background-color: #e5e5e5;
+            color: black;
+            align-self: flex-start;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #ffffff;
+            border-top: 1px solid #ddd;
+        }
+
+        .input-container input {
+            width: 80%;
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            margin-right: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-container button {
+            padding: 10px 20px;
+            background-color: #0084ff;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .input-container button:hover {
+            background-color: #006bb3;
+        }
+    </style>
+</head>
+
+</html>
